@@ -14,7 +14,19 @@
         <link href="css/styles.css" rel="stylesheet" />
         <link href="css/datatables.min.css" rel="stylesheet" />
         <link href="css/lightbox.css" rel="stylesheet" />
-        
+        <link href="https://cdn.datatables.net/select/1.7.0/css/select.dataTables.min.css" rel="stylesheet">
+
+        <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
+
+
+
+
+
+
+
+
+
+
 
     </head>
     <body>
@@ -81,10 +93,11 @@
                 <!-- table here -->
                 
             
-                <ul>
-                        <li class="btn"><a href="#">SAR</a></li> 
+                <!-- <ul>
+                        Rarity:  <li class="btn"><a href="#">All</a></li> | <li class="btn"><a href="#">SAR</a></li> | <li class="btn"><a href="#">C</a></li>
+
                 </ul>
-                
+            -->
                 <table id="raw-table" class="table table-hover"></table>
 
             </div> 
@@ -105,12 +118,15 @@
        <!--  <script src="js/bootstrap.min.js"></script> -->
         
         <script type="text/javascript">
+
+
             var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1VfXSQIJvwKYIIto0iNibFqF5grdImoIlmdibfSPIOMQ/edit#gid=643121114';
             var table 
             // Load an entire worksheet.
+
             $('#raw-table').sheetrock({
               url: mySpreadsheet,
-              query: "select A,B,C,E,F,G"
+              query: "select B,D,E,G,I"
 
              
             }).on('sheetrock:loaded', function () {
@@ -125,39 +141,72 @@
 
               //  sPaginationType: "full_numbers"
                 columns: [
-                 { title: "Brand" },
-                 { title: "ชื่อการ์ด" },
-                 { title: "รูปภาพ" ,
+                 { title: "Expansion" },
+                 { title: "Name (TH)" },
+                 { title: "Image" ,
                     render: function (data, type, row, meta) {
                         return '<a href="' + data + '" data-lightbox="image" data-title="'+ row[1] +'"><img src="' + data + '"width="50" height="50"/></a>';
                     },
                  },
-                 { title: "ราคา"},
-                 { title: "Clearance"},
+                 { title: "Price"},
                  { title: "Rarity"},
-                ]
-              }
+               
+                ],
 
+              select: {
+                style: 'multi',
+                selector: 'td:first-child'
+              },
 
-                );
+              rowId: 'id',
 
+      
+
+             dom: 'Bfrtip',
+             buttons: [
+                'selectNone',
+                'spacer',
+                'showSelected',
+            
+
+             ]
+        });
+
+            table.buttons().container()
+                    .appendTo( '#table_wrapper .col-md-6:eq()' );
             });
 
+
+
+
+            /*
              $('ul').on( 'click', 'a', function () {
                  
                 table
-                    .columns(5)
+                    .columns(4)
                     .search(  $(this).text() )
                     .draw();
                 });
+            */
+
 
 
 
         </script>
+
+    
+
         <!-- Load DataTables script and stylesheet from Unpkg -->
         <script src="https://unpkg.com/datatables@1.10.18/media/js/jquery.dataTables.min.js"></script>
         <!--<link href="https://unpkg.com/datatables@1.10.18/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">-->
         <script src="https://cdn.datatables.net/v/bs4/dt-1.13.5/r-2.5.0/datatables.min.js"></script>
+
+
+        <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
+
+        <script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+
 
     </body>
 </html>
