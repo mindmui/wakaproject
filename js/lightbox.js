@@ -569,3 +569,12 @@
 
   return new Lightbox();
 }));
+
+
+
+    lightbox.option({
+      'imageFadeDuration': 300,
+      'resizeDuration': 400,
+
+      'wrapAround': true
+    })
