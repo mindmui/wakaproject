@@ -15,16 +15,6 @@
         <link href="css/lightbox.css" rel="stylesheet" />
         <!-- For DataTable -->
         <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/b-2.4.1/r-2.5.0/sl-1.7.0/datatables.min.css" rel="stylesheet">
-
-
-
-
-
-
-
-
-
-
     </head>
     <body>
         <!-- Navigation-->
@@ -85,7 +75,7 @@
         <!-- Related items section-->
         <section class="py-5 bg-light gallery">
             <div class="container px-4 px-lg-5 mt-5 ">
-              <h1 class="display-5 fw-bolder"> Collection by WAKA </h1>
+              <h1 class="display-5 fw-bolder"> WAKA Project Shop</h1>
                <p></br></p>
                 <!-- table here -->
                 
@@ -117,13 +107,13 @@
         <script type="text/javascript">
 
 
-            var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1VfXSQIJvwKYIIto0iNibFqF5grdImoIlmdibfSPIOMQ/edit#gid=643121114';
+            var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1VfXSQIJvwKYIIto0iNibFqF5grdImoIlmdibfSPIOMQ/edit#gid=642536758';
             var table 
             // Load an entire worksheet.
 
             $('#raw-table').sheetrock({
               url: mySpreadsheet,
-              query: "select B,D,E,G,I"
+              query: "select B,C,D,E,G,H,I,K where M = 'Y'"
 
              
             }).on('sheetrock:loaded', function () {
@@ -133,20 +123,20 @@
 
              //
 
-             //
-
-
               //  sPaginationType: "full_numbers"
                 columns: [
                  { title: "Expansion" },
+                 { title: "Name (EN)" },
                  { title: "Name (TH)" },
                  { title: "Image" ,
                     render: function (data, type, row, meta) {
-                        return '<a href="' + data + '" data-lightbox="image" data-title="'+ row[1] +'"><img src="' + data + '"width="50" height="50"/></a>';
-                    },
+                        return '<a href="' + data + '" data-lightbox="image" data-title="'+ row[2] +'"><img src="' + data + '"width="50" height="50"/></a>';
+                    }
                  },
                  { title: "Price"},
+                 { title: "Label"},
                  { title: "Rarity"},
+                 { title: "Remark"}
                
                 ],
 
@@ -157,14 +147,11 @@
 
               rowId: 'id',
 
-      
-
              dom: 'Bfrtip',
              buttons: [
                 'selectNone',
                 'spacer',
                 'showSelected',
-            
 
              ]
         });
@@ -172,22 +159,6 @@
             table.buttons().container()
                     .appendTo( '#table_wrapper .col-md-6:eq()' );
             });
-
-
-
-
-            /*
-             $('ul').on( 'click', 'a', function () {
-                 
-                table
-                    .columns(4)
-                    .search(  $(this).text() )
-                    .draw();
-                });
-            */
-
-
-
 
         </script>
 
