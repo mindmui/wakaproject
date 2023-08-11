@@ -48,19 +48,33 @@
             </div>
         </nav>
   
+
+
+
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="assets/tournament.png" alt="..." /></div>
+                    <div class="col-md-6">
+                        <div class="small mb-1">Last update: </div>
+                        <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
+                         <table id="leader-table" class="table "></table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
         <!-- Related items section-->
-        <section class="py-5 bg-light gallery">
+        <section class="py-5 bg-white gallery">
             <div class="container px-4 px-lg-5 mt-5 ">
               <h1 class="display-5 fw-bolder"> WAKA Project Shop</h1>
                <p></br></p>
                 <!-- table here -->
                 
-            
-                <!-- <ul>
-                        Rarity:  <li class="btn"><a href="#">All</a></li> | <li class="btn"><a href="#">SAR</a></li> | <li class="btn"><a href="#">C</a></li>
 
-                </ul>
-            -->
                 <table id="raw-table" class="table table-hover"></table>
 
             </div> 
@@ -137,6 +151,26 @@
             table.buttons().container()
                     .appendTo( '#table_wrapper .col-md-6:eq()' );
             });
+
+
+
+        /* leaderboard*/
+
+            var leadSpreadsheet = 'https://docs.google.com/spreadsheets/d/13VMZTKsxuVX-ZsM9n-956EQe51z0Zr7r4k6tPv4FsVg/edit#gid=0';
+            var leadtable 
+            // Load an entire worksheet.
+
+            $('#leader-table').sheetrock({
+              url: leadSpreadsheet,
+              query: "select A,B,C",
+              fetchSize: 5
+
+             
+            });
+
+
+        
+
 
         </script>
 
