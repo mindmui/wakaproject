@@ -92,7 +92,18 @@
               url: leadSpreadsheet,
               query: "select A,B,C,D where B <> '' ",
               // fetchSize: 5
-
+            }).on('sheetrock:loaded', function () {
+         $(this).DataTable({
+                paging: false,
+                scrollY: 375,
+                dom: 't',
+                columns: [
+                 { title: "Rank" },
+                 { title: "Pokemon Trainer" },
+                 { title: "Victory Road WP" },
+                 { title: "Forever WP" },
+                 ]
+         });
             });
         </script>
 
