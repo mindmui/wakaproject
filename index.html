@@ -33,13 +33,13 @@
                             </ul>
                         </li>
                     </ul>
-                    <form class="d-flex">
+                    <a href="https://www.facebook.com/waka.space.official/" target="_blank">
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="bi-telephone-fill me-1"></i>
                             Contact Us
                             <!--<span class="badge bg-dark text-white ms-1 rounded-pill">0</span>-->
-                        </button>
-                    </form>
+                        </button></a>
+                    
                 </div>
             </div>
         </nav>
@@ -55,6 +55,7 @@
                        <!-- <div class="small mb-1">Last update: </div>-->
                         <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
                          <table id="leader-table" class="table table-hover"></table>
+                         เมื่อจบ Season WAKA Victory Points ที่ไม่ได้นำมาใช้งานจะถูก Convert เป็น WAKA Forever Points ในอัตรา 50%
                         </div>
                     </div>
                 </div>
@@ -62,10 +63,6 @@
         </section>
 
 
-
-        <!-- Related items section-->
- 
-       
 
 
         <!-- Footer-->
@@ -94,14 +91,12 @@
 
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
-              query: "select A,B,C where B <> '' ",
+              query: "select A,B,C,D where B <> '' ",
               // fetchSize: 5
 
              
             });
 
-
-        
 
 
         </script>
