@@ -575,6 +575,6 @@
     lightbox.option({
       'imageFadeDuration': 300,
       'resizeDuration': 400,
-
+      'disableScrolling': true,
       'wrapAround': true
     })

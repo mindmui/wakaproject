@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>WAKA Project - Shop your first collection here!</title>
+        <title>WAKA Project - About Us</title>
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
@@ -21,42 +21,51 @@
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container px-4 px-lg-5">
                 
-                <a class="navbar-brand" href="./index.html"><img src="assets/logo-white.jpg" class="navbar-brand" style="height: 55px"></a>
+                <a class="navbar-brand" href="#!"><img src="assets/logo-white.jpg" class="navbar-brand" style="height: 55px"></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link" aria-current="page" href="./index.html">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">About</a></li>
-                        <li class="nav-item"><a class="nav-link active" href="#!">Shop</a></li>
+                        <li class="nav-item"><a class="nav-link active" href="#!">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="./shop.html">Shop</a></li>
                
           
                             </ul>
                         </li>
                     </ul>
-              <a href="https://www.facebook.com/waka.space.official/" target="_blank">
+                    <a href="https://www.facebook.com/waka.space.official/" target="_blank">
                         <button class="btn btn-outline-dark" type="submit">
                             <i class="bi-telephone-fill me-1"></i>
                             Contact Us
                             <!--<span class="badge bg-dark text-white ms-1 rounded-pill">0</span>-->
                         </button></a>
+                    
                 </div>
             </div>
         </nav>
   
 
 
-        <!-- Related items section-->
-        <section class="py-5 bg-light gallery">
-            <div class="container px-4 px-lg-5 mt-5 ">
-              <h1 class="display-5 fw-bolder"> WAKA Project Shop</h1>
-               <p></br>สั่งซื้อสินค้าได้ผ่านทาง Line Official หรือ Facebook Page Inbox โดยเลือกสินค้าที่สนใจ กดปุ่ม Show only selected เพื่อแสดงเฉพาะสินค้าที่เลือก แคปหน้าจอ แล้วติดต่อหาแอดมินได้เลยค่ะ</br></br></p>
-                <!-- table here -->
-                
 
-                <table id="raw-table" class="table table-hover"></table>
-
-            </div> 
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="row gx-4 gx-lg-5 align-items-center">
+                    <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="assets/poke.jpg" alt="..." /></div>
+                    <div class="col-md-6">
+                       <!-- <div class="small mb-1">Last update: </div>-->
+                        <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
+                         <table id="leader-table" class="table table-hover"></table>
+                         *WP = WAKA Points </br>
+*Top 8 ของแต่ละ Season (นับเฉพาะ Victory Road WP) จะได้เข้าแข่ง Victory Road Championship ชิงรางวัลและ WAKA Points เพิ่มเติม </br>
+*เมื่อจบ Season Victory Road WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 50% อัตโนมัติ
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
+
+
+
 
         <!-- Footer-->
         <footer class="py-5 bg-dark">
@@ -73,75 +82,26 @@
        <!--  <script src="js/bootstrap.min.js"></script> -->
         
         <script type="text/javascript">
+        /* leaderboard*/
 
-
-            var mySpreadsheet = 'https://docs.google.com/spreadsheets/d/1VfXSQIJvwKYIIto0iNibFqF5grdImoIlmdibfSPIOMQ/edit#gid=642536758';
-            var table 
+            var leadSpreadsheet = 'https://docs.google.com/spreadsheets/d/13VMZTKsxuVX-ZsM9n-956EQe51z0Zr7r4k6tPv4FsVg/edit#gid=0';
+            var leadtable 
             // Load an entire worksheet.
 
-            $('#raw-table').sheetrock({
-              url: mySpreadsheet,
-              query: "select B,C,D,E,G,H,I,K where M = 'Y'"
+            $('#leader-table').sheetrock({
+              url: leadSpreadsheet,
+              query: "select A,B,C,D where B <> '' ",
+              // fetchSize: 5
 
-             
-            }).on('sheetrock:loaded', function () {
-            table = $(this).DataTable({
-                responsive: true,
-                pageLength: 10, 
-
-             //
-
-              //  sPaginationType: "full_numbers"
-                 
-
-                columns: [
-                //  { title: "slector"},
-                 { title: "Expansion" },
-                 { title: "Name (EN)" },
-                 { title: "Name (TH)" },
-                 { title: "Image" ,
-                    render: function (data, type, row, meta) {
-                        return '<a href="' + data + '" data-lightbox="image" data-title="'+ row[2] +'"><img src="' + data + '"width="50" height="50"/></a>';
-                    }
-                 },
-                 { title: "Price"},
-                 { title: "Label"},
-                 { title: "Rarity"},
-                 { title: "Remark"}
-               
-                ],
-
-              select: {
-                style: 'multi',
-              },
-
-              rowId: 'id',
-
-             dom: 'Bfrtip',
-             buttons: [
-                'selectNone',
-                'spacer',
-                'showSelected',
-
-             ]
-        });
-
-            table.buttons().container()
-                    .appendTo( '#table_wrapper .col-md-6:eq()' );
             });
-
-
-
-
         </script>
 
     
 
         <!-- Load DataTables script and stylesheet from Unpkg -->
         <script src="https://unpkg.com/datatables@1.10.18/media/js/jquery.dataTables.min.js"></script>
-       <!-- Load DataTables for Bootstrap 5, with jQuery, Buttons and Select APIs -->
+        <!-- Load DataTables for Bootstrap 5, with jQuery, Buttons and Select APIs -->
         <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/b-2.4.1/r-2.5.0/sl-1.7.0/datatables.min.js"></script>
-
 
     </body>
 </html>
