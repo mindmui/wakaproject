@@ -52,7 +52,10 @@
                     <div class="col-md-6">
                        <!-- <div class="small mb-1">Last update: </div>-->
                         <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
-                         <table id="leader-table" class="table table-hover"></table>
+                    
+                         <table id="leader-table" style="width: 100%;" class="table table-hover"></table>
+                    
+
                           *WP = WAKA Points </br>
                          *Top 8 ของแต่ละ Season (นับเฉพาะ Victory Road WP) จะได้เข้าแข่ง Victory Road Championship ชิงรางวัลและ WAKA Points เพิ่มเติม </br>
                         *เมื่อจบ Season Victory Road WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 50% อัตโนมัติ
@@ -105,18 +108,19 @@
 
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
-              query: "select A,B,C,D where B <> '' ",
+              query: "select A,B,C where B <> '' ",
               // fetchSize: 5
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
                 paging: false,
                 scrollY: 375,
+                scrollCollapse: true,
+                scrollX: false,
                 dom: 't',
                 columns: [
-                 { title: "Rank" },
-                 { title: "Pokemon Trainer" },
-                 { title: "Victory Road WP" },
-                 { title: "Forever WP" },
+                 { title: "Rank"},
+                 { title: "Pokemon<br class='d-md-none'>Trainer" },
+                 { title: "Victory<br class='d-md-none'>Road WP" },       
                  ]
          });
             });
