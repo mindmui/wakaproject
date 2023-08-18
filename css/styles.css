@@ -20,6 +20,11 @@ table.center-all td,th{
  table.dataTable td,th {
   font-size: 0.87em;
 }
+
+.tooltip-content
+ {
+  display: none;
+ }
   }
 
 /* For LINE QR Code Display */
