@@ -22,6 +22,83 @@ table.center-all td,th{
 }
   }
 
+/* For LINE QR Code Display */
+  .mytooltip {
+    display: inline;
+    position: relative;
+    z-index: 999
+  }
+
+  .mytooltip .tooltip-item {
+    cursor: pointer;
+    display: inline-block;
+
+  }
+
+  .mytooltip .tooltip-content {
+    opacity: 0;
+    position: absolute;
+    z-index: 9999;
+    width: 200px;
+    left: 50%;
+    margin: 0 0 20px -100px;
+    top: 140%;
+    text-align: left;
+    font-size: 14px;
+    line-height: 30px;
+    -webkit-box-shadow: -5px -5px 15px rgba(48, 54, 61, 0.2);
+    box-shadow: -5px -5px 15px rgba(48, 54, 61, 0.2);
+    background: #2b2b2b;
+    
+    cursor: default;
+    pointer-events: none
+  }
+    .mytooltip .tooltip-content::after{
+      content: '';
+      bottom: 100%;
+      left: 50%;
+      border: solid transparent;
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+      border-color: transparent transparent #2a3035;
+      border-width: 10px;
+      margin-left: -10px
+    }
+    .mytooltip .tooltip-content img {
+      position: relative;
+      height: 200px;
+      display: block;
+    
+    }
+
+  .mytooltip .tooltip-item::after{
+    content: '';
+    position: absolute;
+    width: 360px;
+    height: 20px;
+    bottom: 100%;
+    left: 50%;
+    pointer-events: none;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%)
+  }
+
+  .mytooltip:hover .tooltip-item::after{
+    pointer-events: auto
+  }
+
+  .mytooltip:hover .tooltip-content{
+    pointer-events: auto;
+    opacity: 1;
+    -webkit-transform: translate3d(0, 0, 0) rotate3d(0, 0, 0, 0deg);
+    transform: translate3d(0, 0, 0) rotate3d(0, 0, 0, 0deg)
+  }
+
+
+/* end LINE QR Code Display */
+
 
 
 :root {
