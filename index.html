@@ -108,7 +108,7 @@
 
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
-              query: "select A,B,C where B <> '' ",
+              query: "select A,B,C,D where B <> '' ",
               // fetchSize: 5
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
@@ -119,8 +119,9 @@
                 dom: 't',
                 columns: [
                  { title: "Rank"},
-                 { title: "Pokemon<br class='d-md-none'>Trainer" },
-                 { title: "Victory<br class='d-md-none'>Road WP" },       
+                 { title: "Pokemon<br class='d-md-none'> Trainer" },
+                 { title: "Victory<br class='d-md-none'> Road WP" },    
+                 { title: "Forever<br class='d-md-none'> WP"}   
                  ]
          });
             });
