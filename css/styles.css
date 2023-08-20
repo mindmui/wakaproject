@@ -11,6 +11,27 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
+/* for registration page */
+  .img-button {
+  position: relative;
+  display: inline-block;
+
+  }
+
+  .hover_img {
+    position: absolute;
+    top: 0;
+    left: 0;
+      z-index: 99;
+    display: none;
+  }
+
+  .img-button:hover .hover_img {
+    display: inline;
+  }
+
+
+
 .col-md-6 {
       margin-bottom: 15px !important;
 }
