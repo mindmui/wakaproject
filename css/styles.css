@@ -11,6 +11,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
+.col-md-6 {
+      margin-bottom: 15px !important;
+}
+
 table.center-all td,th{
     vertical-align: middle !important;
 }
@@ -21,9 +25,7 @@ table.center-all td,th{
   font-size: 0.87em;
 }
 
-.col-md-6 {
-      margin-bottom: 15px;
-}
+
 
 .tooltip-content
  {
