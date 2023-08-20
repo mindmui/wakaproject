@@ -42,17 +42,18 @@ table.center-all td,th{
 
 
 @media (max-width: 575.98px) {
- table.dataTable td,th {
-  font-size: 0.87em;
-}
-
-
-
-.tooltip-content
- {
-  display: none;
- }
+   table.dataTable td,th {
+    font-size: 0.87em;
   }
+
+  .scale-image {
+    height: 100% !important;
+  }
+
+  .tooltip-content {
+      display: none;
+     }
+      }
 
 /* For LINE QR Code Display */
   .mytooltip {
