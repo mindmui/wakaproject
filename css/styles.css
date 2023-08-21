@@ -48,7 +48,11 @@ table.center-all td,th{
 
   .scale-image {
     height: 100% !important;
+    width: 100% !important;
   }
+
+
+
 
   .tooltip-content {
       display: none;

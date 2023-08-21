@@ -84,7 +84,13 @@
                             </a>
                         </div>
                         <div class="col-md-12"><br></div>
-                        <img class="scale-image" style="height: 800px; width: 100%; object-fit:scale-down; " src="assets/register.png">
+
+                        </div>
+                          <div class="col-md-6">
+                            <img class="scale-image" style="height: 800px; width: 100%; object-fit:scale-down; " src="assets/register.jpg">
+                        </div>
+                        <div class="col-md-6">
+                            <img class="scale-image" style="height: 800px; width: 100%; object-fit:scale-down; " src="assets/trainers.jpg"> 
                         </div>
                     </div>
                 </div>
@@ -94,21 +100,6 @@
 
 
 
-        <!-- Calendar -->
-        <section class="py-5 bg-white gallery text-center">
-            <div class="container px-4 px-lg-5 mt-5 ">
-              <h1 class="display-5 fw-bolder"> WAKA Calendar</h1>
-              <div class="col-md-6"><br></div>
-              <div class="row gx-4 gx-lg-5 align-items-center">
-                <div class="col-md-6">
-              <a href="assets/2023-tour.jpg" data-lightbox="image-1" data-title="Pokemon League Tournament"><img class="card-img-top mb-5 mb-md-0" src="assets/2023-tour.jpg" alt="..." /></a>
-                </div>
-                <div class="col-md-6">
-              <a href="assets/2023-tour2.jpg" data-lightbox="image-1" data-title="Pokemon League Tournament"><img class="card-img-top mb-5 mb-md-0" src="assets/2023-tour2.jpg" alt="..." /></a>
-          </div>
-      </div>
-            </div> 
-        </section>
 
 
 
@@ -126,43 +117,7 @@
         <script src="js/lightbox.js"></script>
        <!--  <script src="js/bootstrap.min.js"></script> -->
         
-        <script type="text/javascript">
-        /* leaderboard*/
 
-            var leadSpreadsheet = 'https://docs.google.com/spreadsheets/d/13VMZTKsxuVX-ZsM9n-956EQe51z0Zr7r4k6tPv4FsVg/edit#gid=0';
-            var leadtable 
-            // Load an entire worksheet.
-
-            $('#leader-table').sheetrock({
-              url: leadSpreadsheet,
-              query: "select A,B,C,D where B <> '' ",
-              // fetchSize: 5
-            }).on('sheetrock:loaded', function () {
-         $(this).DataTable({
-                paging: false,
-                scrollY: 375,
-                scrollCollapse: true,
-                scrollX: false,
-                dom: 't',
-                columns: [
-                 { title: "Rank"},
-                 { title: "Pokemon<br class='d-md-none'> Trainer" },
-                 { title: "Victory<br class='d-md-none'> Road WP" },    
-                 { title: "Forever<br class='d-md-none'> WP"}   
-                 ]
-         });
-            });
-
-
-
-        
-        
-        $(function () {
-          $('[data-toggle="tooltip"]').tooltip()
-        })
-        </script>
-
-    
 
         <!-- Load DataTables script and stylesheet from Unpkg -->
         <script src="https://unpkg.com/datatables@1.10.18/media/js/jquery.dataTables.min.js"></script>
