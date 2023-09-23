@@ -11,6 +11,10 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
 
+
+/* for canva */
+
+
 /* for registration page */
   .img-button {
   position: relative;
@@ -50,8 +54,6 @@ table.center-all td,th{
     height: 100% !important;
     width: 100% !important;
   }
-
-
 
 
   .tooltip-content {
