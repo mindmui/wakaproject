@@ -25,6 +25,11 @@
         </script>
     </head>
     <body>
+        <div id="fb-root"></div>
+
+        <!-- Your Chat plugin code -->
+        <div id="fb-customer-chat" class="fb-customerchat">
+        </div>
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container px-4 px-lg-5">
@@ -326,15 +331,12 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
             </div>
         </section>
 
-
-        <div id="fb-root"></div>
-
-        <div id="fb-customer-chat" class="fb-customerchat"></div>
+        
 
 
         <!-- Footer-->
@@ -415,18 +417,21 @@
         </script>
 
         <!-- facebook-->
-           <script>
+        <!-- Messenger Chat plugin Code -->
+
+
+            <script>
               var chatbox = document.getElementById('fb-customer-chat');
               chatbox.setAttribute("page_id", "107101582401995");
               chatbox.setAttribute("attribution", "biz_inbox");
             </script>
 
-
+            <!-- Your SDK code -->
             <script>
               window.fbAsyncInit = function() {
                 FB.init({
                   xfbml            : true,
-                  version          : 'API-VERSION'
+                  version          : 'v18.0'
                 });
               };
 
@@ -434,7 +439,7 @@
                 var js, fjs = d.getElementsByTagName(s)[0];
                 if (d.getElementById(id)) return;
                 js = d.createElement(s); js.id = id;
-                js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+                js.src = 'https://connect.facebook.net/th_TH/sdk/xfbml.customerchat.js';
                 fjs.parentNode.insertBefore(js, fjs);
               }(document, 'script', 'facebook-jssdk'));
             </script>
