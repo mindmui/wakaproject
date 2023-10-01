@@ -25,11 +25,37 @@
         </script>
     </head>
     <body>
-        <div id="fb-root"></div>
+       <!-- Messenger Chat plugin Code -->
+             <div id="fb-root"></div>
 
-        <!-- Your Chat plugin code -->
-        <div id="fb-customer-chat" class="fb-customerchat">
-        </div>
+            <!-- Your Chat plugin code -->
+            <div id="fb-customer-chat" class="fb-customerchat">
+            </div>
+
+            <script>
+              var chatbox = document.getElementById('fb-customer-chat');
+              chatbox.setAttribute("page_id", "107101582401995");
+              chatbox.setAttribute("attribution", "biz_inbox");
+            </script>
+
+            <!-- Your SDK code -->
+            <script>
+              window.fbAsyncInit = function() {
+                FB.init({
+                  xfbml            : true,
+                  version          : 'v18.0'
+                });
+              };
+
+              (function(d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = 'https://connect.facebook.net/th_TH/sdk/xfbml.customerchat.js';
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+            </script>
+
         <!-- Navigation-->
         <nav class="navbar navbar-expand-lg navbar-light bg-white">
             <div class="container px-4 px-lg-5">
@@ -72,7 +98,7 @@
             <div class="container px-4 px-lg-5 mt-5">
                 <h1 class="display-5 fw-bolder"> WAKA Project Shop</h1>
                 <br>
-                สั่งซื้อสินค้า ติดต่อแชทหาเรา ได้เลย
+                สั่งซื้อสินค้าแชทหาเราได้เลย
                 <h2 class="fw-bolder mb-4"></h2>
                 <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
                     <div class="col mb-5">
@@ -415,34 +441,6 @@
 
 
         </script>
-
-        <!-- facebook-->
-        <!-- Messenger Chat plugin Code -->
-
-
-            <script>
-              var chatbox = document.getElementById('fb-customer-chat');
-              chatbox.setAttribute("page_id", "107101582401995");
-              chatbox.setAttribute("attribution", "biz_inbox");
-            </script>
-
-            <!-- Your SDK code -->
-            <script>
-              window.fbAsyncInit = function() {
-                FB.init({
-                  xfbml            : true,
-                  version          : 'v18.0'
-                });
-              };
-
-              (function(d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0];
-                if (d.getElementById(id)) return;
-                js = d.createElement(s); js.id = id;
-                js.src = 'https://connect.facebook.net/th_TH/sdk/xfbml.customerchat.js';
-                fjs.parentNode.insertBefore(js, fjs);
-              }(document, 'script', 'facebook-jssdk'));
-            </script>
     
 
         <!-- Load DataTables script and stylesheet from Unpkg -->
