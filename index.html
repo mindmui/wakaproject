@@ -76,11 +76,8 @@
                     
                          <table id="leader-table" style="width: 100%;" class="table table-hover"></table>
 
-                        *Victory Road WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% ในวันที่ 31 ธันวาคม 2566 </br>
+                        *Seasonal WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% ในวันที่ 31 ธันวาคม 2566 </br>
                           *WP = WAKA Points </br>
-                         *Top 8 ของแต่ละ Season (นับเฉพาะ Victory Road WP) จะได้เข้าแข่ง Victory Road Championship ชิงรางวัลและ WAKA Points เพิ่มเติม </br>
-                         *Seasonal WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% ในวันที่ 31 ธันวาคม 2566
-                         *Top 8 ของแต่ละ Season (นับเฉพาะ Victory Road WP) จะได้เข้าแข่ง Victory Road Championship ชิงรางวัลและ WAKA Points เพิ่มเติม 
                                                </div>
                     </div>
                 </div>
@@ -134,8 +131,6 @@
 
               query: "select A,B,C,D,E where B <> '' ",
 
-              query: "select A,B,C,E where B <> '' ",
-
               // fetchSize: 5
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
@@ -151,9 +146,6 @@
                  { title: "Seasonal<br class='d-md-none'> WP" },    
                  { title: "Forever<br class='d-md-none'> WP"}   ,
                  { title: "Total<br class='d-md-none'> WP"}  
-
-                 { title: "Victory<br class='d-md-none'> Road WP" },    
-                 { title: "Total<br class='d-md-none'> WP"}   
 
                  ]
          });
