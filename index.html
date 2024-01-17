@@ -14,7 +14,7 @@
         <link href="css/styles.css" rel="stylesheet" />
         <link href="css/lightbox.css" rel="stylesheet" />
         <!-- For DataTable -->
-        <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/b-2.4.1/r-2.5.0/sl-1.7.0/datatables.min.css" rel="stylesheet">
+        <link href="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.8/b-2.4.2/fc-4.3.0/r-2.5.0/sl-1.7.0/datatables.min.css" rel="stylesheet">
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZDWS9HT55"></script>
         <script>
@@ -69,14 +69,14 @@
         <section class="py-5 bg-light gallery">
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
-                    <div class="col-md-6"><a href="assets/poke.jpg" data-lightbox="image"><img class="card-img-top mb-5 mb-md-0" src="assets/poke.jpg" alt="..." /></a></div>
-                    <div class="col-md-6">
+                    
+                    <div class="col-md-12">
                        <!-- <div class="small mb-1">Last update: </div>-->
-                        <h1 class="display-5 fw-bolder">WAKA Leaderboard Season 1</h1>
+                        <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
                     
                          <table id="leader-table" style="width: 100%;" class="table table-hover"></table>
 
-                        *Seasonal WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% ในวันที่ 31 ธันวาคม 2566 </br>
+                        *Seasonal WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% เมื่อจบ Season</br>
                           *WP = WAKA Points </br>
                                                </div>
                     </div>
@@ -85,8 +85,8 @@
         </section>
 
 
-
-        <!-- Calendar -->
+<!--
+       
         <section class="py-5 bg-white gallery text-center">
             <div class="container px-4 px-lg-5 mt-5 ">
               <h1 class="display-5 fw-bolder"> WAKA Calendar</h1>
@@ -101,7 +101,7 @@
       </div>
             </div> 
         </section>
-
+-->
 
 
 
@@ -129,24 +129,28 @@
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
 
-              query: "select A,B,C,D,E where B <> '' ",
-
-              // fetchSize: 5
+              query: "select A,B,C,D,E,F,G where B <> '' ",
+        
+            //  fetchSize: 10
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
+
                 paging: false,
                 scrollY: 375,
                 scrollCollapse: true,
-                scrollX: false,
+                scrollX: true,
+                fixedColumns: {
+                    leftColumns: 2
+                },
                 dom: 't',
                 columns: [
                  { title: "Rank"},
-                 { title: "Pokemon<br class='d-md-none'> Trainer" },
-
-                 { title: "Seasonal<br class='d-md-none'> WP" },    
-                 { title: "Forever<br class='d-md-none'> WP"}   ,
-                 { title: "Total<br class='d-md-none'> WP"}  
-
+                 { title: "Trainer<br class='d-md-none'> Name" },
+                 { title: "Victory<br class='d-md-none'> Road WP" },    
+                 { title: "Monthly<br class='d-md-none'> WP"}   ,
+                 { title: "Seasonal<br class='d-md-none'> WP"}  ,
+                 { title: "Forever<br class='d-md-none'> WP"}  ,
+                 { title: "Total<br class='d-md-none'> WP"} 
                  ]
          });
             });
@@ -157,7 +161,11 @@
         <!-- Load DataTables script and stylesheet from Unpkg -->
         <script src="https://unpkg.com/datatables@1.10.18/media/js/jquery.dataTables.min.js"></script>
         <!-- Load DataTables for Bootstrap 5, with jQuery, Buttons and Select APIs -->
-        <script src="https://cdn.datatables.net/v/bs5/jq-3.7.0/dt-1.13.6/b-2.4.1/r-2.5.0/sl-1.7.0/datatables.min.js"></script>
+        <script src="https://cdn.datatables.net/v/dt/jq-3.7.0/dt-1.13.8/b-2.4.2/fc-4.3.0/r-2.5.0/sl-1.7.0/datatables.min.js"></script>
+
+
+
+
 
     </body>
 </html>

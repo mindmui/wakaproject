@@ -12,6 +12,9 @@
  */
 
 
+
+   tr { border: none; }
+
 /* for google-map */
 .google-map {
      padding-bottom: 70%;
