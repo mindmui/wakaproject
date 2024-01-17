@@ -74,7 +74,7 @@
                        <!-- <div class="small mb-1">Last update: </div>-->
                         <h1 class="display-5 fw-bolder">WAKA Leaderboard</h1>
                     
-                         <table id="leader-table" style="width: 100%;" class="table table-hover"></table>
+                         <table id="leader-table" style="width: 100%;" class="  hover stripe"></table>
 
                         *Seasonal WP ที่ไม่ได้นำมาแลกของรางวัล จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% เมื่อจบ Season</br>
                           *WP = WAKA Points </br>
@@ -130,19 +130,20 @@
               url: leadSpreadsheet,
 
               query: "select A,B,C,D,E,F,G where B <> '' ",
-        
+         
             //  fetchSize: 10
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
 
                 paging: false,
+                displayLength: 25,
                 scrollY: 375,
                 scrollCollapse: true,
                 scrollX: true,
                 fixedColumns: {
                     leftColumns: 2
                 },
-                dom: 't',
+                dom: 'ft',
                 columns: [
                  { title: "Rank"},
                  { title: "Trainer<br class='d-md-none'> Name" },
