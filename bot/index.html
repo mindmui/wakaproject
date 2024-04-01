@@ -110,7 +110,7 @@
 
               query: "select A,B,C",
          
-              fetchSize: 10
+           //   fetchSize: 10
             }).on('sheetrock:loaded', function () {
          $(this).DataTable({
 
@@ -122,7 +122,7 @@
                 fixedColumns: {
                     leftColumns: 2
                 },
-                dom: 't',
+                dom: 'ft',
                 columns: [
                  { title: "Rank"},
                  { title: "BoT<br class='d-md-none'> Player" },
