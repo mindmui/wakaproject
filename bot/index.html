@@ -110,7 +110,7 @@
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
 
-              query: "select A,B,C",
+              query: "select A,B,C,D,E",
          
            //   fetchSize: 10
             }).on('sheetrock:loaded', function () {
@@ -128,7 +128,10 @@
                 columns: [
                  { title: "Rank"},
                  { title: "BoT<br class='d-md-none'> Player" },
-                 { title: "BoT<br class='d-md-none'> Seasonal WP" }
+                 { title: "BoT<br class='d-md-none'> Seasonal WP" },
+                 { title: "Season 1<br class='d-md-none'> (June)"},
+                 { title: "Total<br class='d-md-none'> WP"}
+
                  ]
          });
             });
