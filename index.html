@@ -34,10 +34,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
                         <li class="nav-item"><a class="nav-link active" aria-current="page" href="./index.html">Pokemon</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./youngguns">Young Guns</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="./youngguns">Young Guns</a></li> -->
                         <li class="nav-item"><a class="nav-link" href="./bot">BoT</a></li>
                         <li class="nav-item"><a class="nav-link" href="./rewards.html">Rewards</a></li>
-                        <li class="nav-item"><a class="nav-link" href="./contact">Contact</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="./contact">Contact</a></li> -->
                     </ul>
 
 
@@ -73,10 +73,8 @@
                         <h1 class="display-5 fw-bolder">WAKA Pokemon Leaderboard</h1>
                     
                          <table id="leader-table" style="width: 100%;" class="  hover stripe"></table>
-                         *Victory Road WP = คะแนนจากการแข่งวันเสาร์ ที่ไว้คัด Top 8 ในแต่ละ Season เพื่อมาหา Champion ประจำ Season (คะแนนจะถูกแปลงเป็น Seasonal WP หลังจบแต่ละ Season) </br>
-*Monthly WP = คะแนนจากการแข่งวันพฤหัส สะสมแต้มรวมประจำเดือน มีรางวัลพิเศษให้กับผู้มีคะแนนสูงสุดในแต่ละเดือน (คะแนนจะถูกแปลงเป็น Seasonal WP หลังจบแต่ละเดือน) </br>
-*Seasonal WP = คะแนนที่สะสมในแต่ละ Season ไว้แลกของรางวัลหลังจบ Season (คะแนนที่ไม่ได้นำมาแลกของรางวัลใน Season จะถูกเปลี่ยนเป็น Forever WP ในอัตรา 70% เมื่อจบ Season) </br>
-*Forever WP = คะแนนสะสมตลอดชีพ ใช้แลกของรางวัลได้ทุกเมื่อ
+                          *Victory Road WP = คะแนนจากการแข่งยิมวันเสาร์ สะสมเพื่อนำ Top 8 ในแต่ละ Season มาแข่งเพื่อหา Champion ประจำ Season (คะแนนจะถูกแปลงเป็น Forever WP หลังจบแต่ละ Season) </br>
+                          *Forever WP = WAKA Points สะสมตลอดชีพ ใช้แลกของรางวัลได้ทุกเมื่อ
 
                                                </div>
                     </div>
@@ -129,7 +127,7 @@
             $('#leader-table').sheetrock({
               url: leadSpreadsheet,
 
-              query: "select A,B,C,D,E,F,G where B <> '' ",
+              query: "select A,B,C,F,G where B <> '' ",
          
             //  fetchSize: 10
             }).on('sheetrock:loaded', function () {
@@ -148,8 +146,6 @@
                  { title: "Rank"},
                  { title: "Trainer<br class='d-md-none'> Name" },
                  { title: "Victory<br class='d-md-none'> Road WP" },    
-                 { title: "Monthly<br class='d-md-none'> WP"}   ,
-                 { title: "Seasonal<br class='d-md-none'> WP"}  ,
                  { title: "Forever<br class='d-md-none'> WP"}  ,
                  { title: "Total<br class='d-md-none'> WP"} 
                  ]
