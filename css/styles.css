@@ -12,6 +12,26 @@
  */
 
 
+/* Add padding and center for the registration of form */
+#signupForm {
+  padding: 1.5rem;
+  margin: 1rem auto;
+  max-width: 600px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#signupForm input {
+  border-radius: 0.375rem; /* Matches Bootstrap form control rounding */
+  font-size: 1rem;
+}
+
+#signupForm .btn {
+  padding: 0.75rem;
+  font-size: 1.1rem;
+}
+/*****/
+
 /* for google-map */
 .google-map {
      padding-bottom: 70%;
