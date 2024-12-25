@@ -67,15 +67,15 @@
 
   
         <!-- Section 1-->
-        <section class="py-5 bg-light gallery">
+        <section class="py-5 bg-light gallery "> 
             <div class="container px-4 px-lg-5 my-5">
                 <div class="row gx-4 gx-lg-5 align-items-center">
                     
-                     <div class="col-md-6 col-lg-4">
+                     <div class="col-md-12 col-lg-4 mx-auto">
                           
                         
                         <!-- Login Card -->
-                        <div class="card shadow-lg" id="loginCard">
+                        <div class="card shadow-lg " id="loginCard">
                           <div class="card-body">
                             <h2 class="card-title text-center mb-4">Login</h2>
 
@@ -121,7 +121,8 @@
                           </div>
                         </div>
 
-                        
+
+
                       </div>
                 </div>
             </div>
@@ -159,6 +160,24 @@
             firebase.initializeApp(firebaseConfig);
             const auth = firebase.auth();
 
+            // Elements
+            const loginCard = document.getElementById('loginCard');
+            const forgotPasswordCard = document.getElementById('forgotPasswordCard');
+
+            // Show Forgot Password Card
+            document.getElementById('forgotPasswordLink').addEventListener('click', function(e) {
+              e.preventDefault();
+              loginCard.classList.add('d-none');
+              forgotPasswordCard.classList.remove('d-none');
+            });
+
+            // Show Login Card
+            document.getElementById('backToLoginLink').addEventListener('click', function(e) {
+              e.preventDefault();
+              forgotPasswordCard.classList.add('d-none');
+              loginCard.classList.remove('d-none');
+            });
+
             // Login Form Submission
             document.getElementById('loginForm').addEventListener('submit', function(e) {
               e.preventDefault();
@@ -176,21 +195,24 @@
                 });
             });
 
-            // Forgot Password
-            document.getElementById('forgotPasswordLink').addEventListener('click', function() {
-              const email = prompt("Please enter your email address to reset your password:");
-              if (email) {
-                auth.sendPasswordResetEmail(email)
-                  .then(() => {
-                    alert("Password reset email sent. Check your inbox.");
-                  })
-                  .catch((error) => {
-                    console.error("Error sending password reset email:", error);
-                    alert("Error: " + error.message);
-                  });
-              }
+            // Forgot Password Form Submission
+            document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+              e.preventDefault();
+              const resetEmail = document.getElementById('resetEmail').value;
+
+              auth.sendPasswordResetEmail(resetEmail)
+                .then(() => {
+                  alert("Password reset email sent. Check your inbox.");
+                  // Redirect back to the login card
+                  forgotPasswordCard.classList.add('d-none');
+                  loginCard.classList.remove('d-none');
+                })
+                .catch((error) => {
+                  console.error("Error sending password reset email:", error);
+                  alert("Error: " + error.message);
+                });
             });
-          </script>    
+          </script>
 
 
 

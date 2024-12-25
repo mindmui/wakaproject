@@ -11,7 +11,7 @@
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="https://cdn.jsdelivr.net/gh/mindmui/wakaproject@main/css/styles.css" rel="stylesheet" />
+        <link href="css/styles.css" rel="stylesheet" />
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-MZDWS9HT55"></script>
         <script>
@@ -124,27 +124,57 @@
                               </div>
 
 
-                                  <!-- Point History Card -->
-                                  <div class="col-md-8 col-lg-6 mt-4 mt-lg-0">
-                                    <div class="card shadow-lg">
-                                      <div class="card-body">
-                                        <h2 class="card-title text-center mb-4">Point History</h2>
-                                        <ul id="pointHistoryList" class="list-group list-group-flush">
-                                          <!-- Transactions will be appended here -->
-                                        </ul>
-                                      </div>
+                              <!-- Point History Card with Pagination -->
+                              <div class="col-md-8 col-lg-6">
+                                <div class="card shadow-lg">
+                                  <div class="card-body">
+                                    <h2 class="card-title text-center mb-4">Point History</h2>
+                                    <div class="table-responsive">
+
+                                      <table class="table ">
+                                        <thead>
+                                          <tr>
+                                            <th>Date</th>
+                                            <th>Category</th>
+                                            <th>Description</th>
+                                            <th>Points</th>
+                                          </tr>
+                                        </thead>
+                                        <tbody id="pointHistoryList">
+                                          <!-- Rows will be dynamically added here -->
+                                        </tbody>
+                                      </table>
+
                                     </div>
                                   </div>
+                                </div>
+                              </div>
 
+                            
+                         <!-- Rewards Card -->
+                            <div class="col-md-12 col-lg-12">
+                              <div class="card shadow-lg">
+                                <div class="card-body">
+                                 <div class="d-flex justify-content-center align-items-center mb-4 flex-wrap">
+                                  <h2 class="card-title mb-0 me-3">Available Rewards</h2>
+                                  <a href="redeem.html" class="btn btn-primary">Redeem Rewards</a>
+                                 </div>
+                                  <div id="rewardsList" class="row">
+
+                                    <!-- Rewards will be dynamically added here -->
+                                  </div>
+                                </div>
+                              </div>
                             </div>
                           </div>
 
+                          </div>
 
                     </div>
         </section>
 
-
-
+ 
+ 
 
 
 
@@ -160,75 +190,271 @@
         <script src="js/scripts.js"></script>   
 
         <!-- Firebase Membership -->
-              <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                      const db = firebase.firestore();
-                      const auth = firebase.auth();
-                      const userEmailField = document.getElementById('userEmail');
-                      const displayNameField = document.getElementById('displayName');
-                      const displayAkaField = document.getElementById('displayAka');
-                      const userPointsField = document.getElementById('userPoints');
-                      const updateProfileForm = document.getElementById('updateProfileForm');
-                      const pointHistoryList = document.getElementById('pointHistoryList');
-                      const changePasswordForm = document.getElementById('changePasswordForm');
-                      const logoutButton = document.getElementById('logout');
-                      
-                      auth.onAuthStateChanged(user => {
-                        if (user) {
-                          userEmailField.textContent = user.email;
-                          const userRef = db.collection('users').doc(user.uid);
-                          
-                          userRef.get().then(doc => {
-                            if (doc.exists) {
-                              const userData = doc.data();
-                              userPointsField.textContent = userData.points;
-                              displayNameField.textContent = userData.fullName;
-                              displayAkaField.textContent = userData.aka;
-                              document.getElementById('profileName').value = userData.fullName;
-                              document.getElementById('profileAka').value = userData.aka;
-                            }
-                          }).catch(error => {
-                            console.error("Error fetching user data:", error);
-                          });
+        <script>
 
-                          // Fetch point history for the user from pointHistory collection
-                          db.collection("pointHistory")
-                            .where("userId", "==", user.uid) // Filter by userId
-                            .orderBy("date", "desc") // Order by date (latest first)
-                            .get()
-                            .then(snapshot => {
-                              pointHistoryList.innerHTML = ""; // Clear list first
-                              snapshot.forEach(doc => {
-                                const transaction = doc.data();
-                                const listItem = document.createElement("li");
-                                listItem.classList.add("list-group-item");
-                                listItem.innerHTML = `
-                                  <strong>Date:</strong> ${transaction.date.toDate().toLocaleDateString()}<br>
-                                  <strong>Points:</strong> ${transaction.points} <br>
-                                  <strong>Type:</strong> ${transaction.type} <br>
-                                  <strong>Description:</strong> ${transaction.description || "N/A"}
-                                `;
-                                pointHistoryList.appendChild(listItem);
-                              });
-                            })
-                            .catch(error => {
-                              console.error("Error fetching point history:", error);
-                            });
-                        } else {
-                          window.location.href = "login.html"; // Redirect to login if not logged in
-                        }
-                      });
+                const db = firebase.firestore();
+                const auth = firebase.auth();
 
-                      // Other form event listeners remain the same
+              document.addEventListener("DOMContentLoaded", function() {
 
-                      // Log Out
-                      logoutButton.addEventListener('click', function() {
-                        auth.signOut().then(() => {
-                          window.location.href = "login.html";
-                        });
-                      });
+                const userEmailField = document.getElementById('userEmail');
+                const displayNameField = document.getElementById('displayName');
+                const displayAkaField = document.getElementById('displayAka');
+                const userPointsField = document.getElementById('userPoints');
+                const updateProfileForm = document.getElementById('updateProfileForm');
+                const changePasswordForm = document.getElementById('changePasswordForm');
+                const logoutButton = document.getElementById('logout');
+                const newPasswordField = document.getElementById('newPassword');
+                const confirmNewPasswordField = document.getElementById('confirmNewPassword');
+                const passwordMatchError = document.getElementById('passwordMatchError');
+                const passwordLengthError = document.getElementById('passwordLengthError');
+                const pointHistoryList = document.getElementById('pointHistoryList');
+                const pageSize = 5; // Number of records per page
+                let lastVisible = null;
+                let firstVisible = null;
+
+                // Fetch and display user data
+                auth.onAuthStateChanged(user => {
+                  if (user) {
+                    userEmailField.textContent = user.email;
+                    const userRef = db.collection('users').doc(user.uid);
+                    
+                    userRef.get().then(doc => {
+                      if (doc.exists) {
+                        const userData = doc.data();
+                        userPointsField.textContent = userData.points;
+                        displayNameField.textContent = userData.fullName;
+                        displayAkaField.textContent = userData.aka;
+                        document.getElementById('profileName').value = userData.fullName;
+                        document.getElementById('profileAka').value = userData.aka;
+                        // Load Point History after fetching user data
+                        loadPointHistory(user.uid);
+                      }
+                    }).catch(error => {
+                      console.error("Error fetching user data:", error);
                     });
-                  </script>
+                  } else {
+                    window.location.href = "login.html"; // Redirect to login if not logged in
+                  }
+                });
+
+                // Update Profile Name and AKA
+                updateProfileForm.addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const newProfileName = document.getElementById('profileName').value;
+                  const newAka = document.getElementById('profileAka').value;
+                  
+                  if (auth.currentUser) {
+                    const userRef = db.collection('users').doc(auth.currentUser.uid);
+                    userRef.update({
+                      fullName: newProfileName,
+                      aka: newAka
+                    }).then(() => {
+                      alert("Profile updated successfully!");
+                      displayNameField.textContent = newProfileName;
+                      displayAkaField.textContent = newAka;
+                    }).catch(error => {
+                      console.error("Error updating profile:", error);
+                      alert("Error updating profile.");
+                    });
+                  }
+                });
+
+                // Real-time password length and matching check
+                newPasswordField.addEventListener('input', function() {
+                  if (newPasswordField.value.length < 6) {
+                    passwordLengthError.style.display = "inline"; // Show error if password is too short
+                  } else {
+                    passwordLengthError.style.display = "none"; // Hide error when password meets length
+                  }
+                  checkPasswordMatch(); // Check match in real time as well
+                });
+
+                confirmNewPasswordField.addEventListener('input', checkPasswordMatch);
+
+                function checkPasswordMatch() {
+                  if (newPasswordField.value !== confirmNewPasswordField.value) {
+                    passwordMatchError.style.display = "inline"; // Show error if passwords don't match
+                  } else {
+                    passwordMatchError.style.display = "none"; // Hide error when passwords match
+                  }
+                }
+
+                // Change Password
+                changePasswordForm.addEventListener('submit', function(e) {
+                  e.preventDefault();
+                  const currentPassword = document.getElementById('currentPassword').value;
+                  const newPassword = newPasswordField.value;
+                  const confirmNewPassword = confirmNewPasswordField.value;
+
+                  // Final checks before submission
+                  if (newPassword.length < 6) {
+                    passwordLengthError.style.display = "inline";
+                    return;
+                  }
+
+                  if (newPassword !== confirmNewPassword) {
+                    passwordMatchError.style.display = "inline";
+                    return;
+                  }
+
+                  // Reauthenticate and change password
+                  const user = auth.currentUser;
+                  const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                  
+                  user.reauthenticateWithCredential(credential).then(() => {
+                    return user.updatePassword(newPassword);
+                  }).then(() => {
+                    alert("Password changed successfully!");
+                    
+                    // Clear password fields after successful password change
+                    document.getElementById('currentPassword').value = '';
+                    newPasswordField.value = '';
+                    confirmNewPasswordField.value = '';
+                  }).catch(error => {
+                    console.error("Error changing password:", error);
+                    if (error.code === "auth/wrong-password") {
+                      alert("Incorrect current password.");
+                    } else if (error.code === "auth/requires-recent-login") {
+                      alert("Please log out and log back in to change your password.");
+                    } else {
+                      alert("Error changing password.");
+                    }
+                  });
+                });
+
+
+                  // Log Out
+                  document.getElementById('logout').addEventListener('click', function () {
+                    auth.signOut().then(() => {
+                      window.location.href = "login.html";
+                    });
+                  });
+
+
+                  // Function to load all point history
+                  function loadPointHistory(userId) {
+                    console.log("Loading point history for userId:", userId); // Debugging
+
+                    db.collection("pointHistory")
+                      .where("userId", "==", userId)
+                      .orderBy("date", "desc")
+                      .get()
+                      .then(snapshot => {
+                        const pointHistoryList = document.getElementById('pointHistoryList');
+                        pointHistoryList.innerHTML = ""; // Clear the table body
+
+                        if (snapshot.empty) {
+                          console.warn("No point history records found for userId:", userId);
+                          const emptyRow = document.createElement("tr");
+                          const emptyCell = document.createElement("td");
+                          emptyCell.colSpan = 3;
+                          emptyCell.textContent = "No records available.";
+                          emptyRow.appendChild(emptyCell);
+                          pointHistoryList.appendChild(emptyRow);
+                          return;
+                        }
+
+                        // Render each transaction as a table row
+                        snapshot.forEach(doc => {
+                          const transaction = doc.data();
+                          console.log("Transaction data:", transaction); // Debugging
+
+                          const row = document.createElement("tr");
+
+                          // Date cell
+                          const dateCell = document.createElement("td");
+                          const date = transaction.date.toDate();
+                          const options = { day: '2-digit', month: 'short', year: '2-digit' };
+                          dateCell.textContent = date.toLocaleDateString('en-GB', options);
+                          row.appendChild(dateCell);
+
+
+                          // Category cell
+                          const categoryCell = document.createElement("td");
+                          categoryCell.textContent = transaction.category || "N/A";
+                          row.appendChild(categoryCell);                            
+
+                          // Description cell
+                          const descriptionCell = document.createElement("td");
+                          descriptionCell.textContent = transaction.description || "N/A";
+                          row.appendChild(descriptionCell);
+
+                          // Points cell
+                          const pointsCell = document.createElement("td");
+                          pointsCell.textContent = transaction.points;
+
+                          // Assign class based on whether points are positive or negative
+                          if (transaction.points > 0) {
+                            pointsCell.classList.add("points-add");
+                          } else if (transaction.points < 0) {
+                            pointsCell.classList.add("points-redeem");
+                          }
+                          row.appendChild(pointsCell);
+
+                          // Append row to the table body
+                          pointHistoryList.appendChild(row);
+                        });
+                      })
+                      .catch(error => {
+                        console.error("Error fetching point history:", error);
+                        const pointHistoryList = document.getElementById('pointHistoryList');
+                        pointHistoryList.innerHTML = "<tr><td colspan='3'>Error loading data. Please try again later.</td></tr>";
+                      });
+                  }
+
+
+  // Call loadRewards to fetch and display rewards
+  loadRewards();
+
+
+
+
+
+//closing DOM
+              });  
+
+
+
+
+            function loadRewards() {
+              const rewardsList = document.getElementById('rewardsList');
+
+              // Fetch rewards that are available
+              db.collection("rewards").where("available", "==", true).get().then(querySnapshot => {
+                const rewards = [];
+                querySnapshot.forEach(doc => {
+                  const reward = doc.data();
+                  console.log("Fetched reward:", reward); // Log reward details
+                  rewards.push(reward);
+                });
+
+                // Pick 3 random rewards
+                const randomRewards = rewards.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+                rewardsList.innerHTML = ""; // Clear existing rewards
+                randomRewards.forEach(reward => {
+                  const rewardCard = document.createElement("div");
+                  rewardCard.className = "col-md-6 mb-3";
+
+                  rewardCard.innerHTML = `
+                    <div class="card border-secondary">
+                      <img src="${reward.imageUrl}" class="card-img-top" alt="${reward.rewardName}">
+                      <div class="card-body text-center">
+                        <h5 class="card-title">${reward.rewardName}</h5>
+                        <p class="card-text"><strong>Points: ${reward.pointsRequired}</strong></p>
+                      </div>
+                    </div>
+                  `;
+                  rewardsList.appendChild(rewardCard);
+                });
+              }).catch(error => {
+                console.error("Error fetching rewards:", error);
+              });
+}
+        
+
+      </script>
 
     </body>
 </html>
