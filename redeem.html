@@ -166,37 +166,37 @@
 
               // Function to load redemption history
               function loadRedemptionHistory(userId) {
-  const redemptionHistoryList = document.getElementById('redemptionHistoryList');
+              const redemptionHistoryList = document.getElementById('redemptionHistoryList');
 
-  db.collection('pointHistory')
-    .where('userId', '==', userId)
-    .where('category', '==', 'Rewards Redemption')
-    .orderBy('date', 'desc')
-    .get()
-    .then(querySnapshot => {
-      redemptionHistoryList.innerHTML = ""; // Clear existing history
-      console.log("Redemption history fetched. Total records:", querySnapshot.size);
-      if (querySnapshot.empty) {
-        redemptionHistoryList.innerHTML = "<p>No redemption history available.</p>";
-      } else {
-        querySnapshot.forEach(doc => {
-          const history = doc.data();
-          console.log("Fetched history record:", history); // Log each record
-          const date = new Date(history.date.seconds * 1000).toLocaleDateString('en-GB');
-          const historyItem = `
-            <div class="mb-2">
-              <p>${date} - Redeemed ${history.description} for ${history.points} points</p>
-            </div>
-          `;
-          redemptionHistoryList.insertAdjacentHTML("beforeend", historyItem);
-        });
-      }
-    })
-    .catch(error => {
-      console.error("Error fetching redemption history:", error);
-      redemptionHistoryList.innerHTML = "<p>Error loading redemption history.</p>";
-    });
-}
+              db.collection('pointHistory')
+                .where('userId', '==', userId)
+                .where('category', '==', 'Rewards Redemption')
+                .orderBy('date', 'desc')
+                .get()
+                .then(querySnapshot => {
+                  redemptionHistoryList.innerHTML = ""; // Clear existing history
+                  console.log("Redemption history fetched. Total records:", querySnapshot.size);
+                  if (querySnapshot.empty) {
+                    redemptionHistoryList.innerHTML = "<p>No redemption history available.</p>";
+                  } else {
+                    querySnapshot.forEach(doc => {
+                      const history = doc.data();
+                      console.log("Fetched history record:", history); // Log each record
+                      const date = new Date(history.date.seconds * 1000).toLocaleDateString('en-GB');
+                      const historyItem = `
+                        <div class="mb-2">
+                          <p>${date} - Redeemed ${history.description} for ${history.points} points</p>
+                        </div>
+                      `;
+                      redemptionHistoryList.insertAdjacentHTML("beforeend", historyItem);
+                    });
+                  }
+                })
+                .catch(error => {
+                  console.error("Error fetching redemption history:", error);
+                  redemptionHistoryList.innerHTML = "<p>Error loading redemption history.</p>";
+                });
+            }
 
               // Fetch and display rewards
               db.collection("rewards").get().then(querySnapshot => {
