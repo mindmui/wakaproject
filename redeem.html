@@ -10,6 +10,7 @@
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Bootstrap icons-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
         <!-- Google tag (gtag.js) -->
@@ -111,9 +112,25 @@
                                 <div class="card">
                                   <div class="card-body">
                                     <h2 class="card-title">Redemption History</h2>
-                                    <div id="redemptionHistoryList" class="mt-3">
-                                      <!-- Redemption history will be dynamically loaded here -->
+                                      <div class="table-responsive">
+
+                                        <table class="table ">
+                                          <thead>
+                                            <tr>
+                                              <th>Date</th>
+                                              <th>Description</th>
+                                              <th>Points</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody id="redemptionHistoryList">
+                                            <!-- Rows will be dynamically added here -->
+                                          </tbody>
+                                        </table>
+
                                     </div>
+
+
+
                                   </div>
                                 </div>
                                 
@@ -126,6 +143,26 @@
 
 
 
+        <!-- Redemption Confirmation Modal -->
+          <div class="modal fade" id="redeemModal" tabindex="-1" aria-labelledby="redeemModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="redeemModalLabel">Confirm Redemption</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p><strong>Reward:</strong> <span id="modalRewardName"></span></p>
+                  <p><strong>Points Required:</strong> <span id="modalPointsRequired"></span></p>
+                  <p><strong>Remaining Points:</strong> <span id="modalRemainingPoints"></span></p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" id="confirmRedeem" class="btn btn-primary">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
 
 
 
@@ -141,105 +178,212 @@
 
         <!-- Firebase Membership -->
         <script>
+          // Global Variables
+          const db = firebase.firestore();
+          const auth = firebase.auth();
+          let userPoints = 0; // Store user's points for redemption checks
 
+          // Helper Functions
 
-          // Fetch and display rewards
-            function loadAllRewards() {
-              const db = firebase.firestore();
-              const allRewardsList = document.getElementById('allRewardsList');
-              const userPointsField = document.getElementById('userPoints');
-              const redemptionHistoryList = document.getElementById('redemptionHistoryList');
+          // Load user points
+          function loadUserPoints(userId) {
+            const userPointsField = document.getElementById('userPoints');
 
-              // Function to load user points
-              function loadUserPoints(userId) {
-                db.collection('users').doc(userId).get().then(doc => {
-                  if (doc.exists) {
-                    userPointsField.textContent = doc.data().points + " points";
-                  } else {
-                    userPointsField.textContent = "No points available.";
-                  }
-                }).catch(error => {
-                  console.error("Error fetching user points:", error);
-                  userPointsField.textContent = "Error loading points.";
-                });
+            db.collection('users').doc(userId).get().then(doc => {
+              if (doc.exists) {
+                userPoints = doc.data().points;
+                userPointsField.textContent = `${userPoints} points`;
+              } else {
+                userPointsField.textContent = "No points available.";
               }
+            }).catch(error => {
+              console.error("Error fetching user points:", error);
+              userPointsField.textContent = "Error loading points.";
+            });
+          }
 
-              // Function to load redemption history
-              function loadRedemptionHistory(userId) {
-              const redemptionHistoryList = document.getElementById('redemptionHistoryList');
+          // Update redemption history
+          function updateRedemptionHistory(userId) {
+            const redemptionHistoryList = document.getElementById('redemptionHistoryList');
 
-              db.collection('pointHistory')
-                .where('userId', '==', userId)
-                .where('category', '==', 'Rewards Redemption')
-                .orderBy('date', 'desc')
-                .get()
-                .then(querySnapshot => {
-                  redemptionHistoryList.innerHTML = ""; // Clear existing history
-                  console.log("Redemption history fetched. Total records:", querySnapshot.size);
-                  if (querySnapshot.empty) {
-                    redemptionHistoryList.innerHTML = "<p>No redemption history available.</p>";
-                  } else {
-                    querySnapshot.forEach(doc => {
-                      const history = doc.data();
-                      console.log("Fetched history record:", history); // Log each record
-                      const date = new Date(history.date.seconds * 1000).toLocaleDateString('en-GB');
-                      const historyItem = `
-                        <div class="mb-2">
-                          <p>${date} - Redeemed ${history.description} for ${history.points} points</p>
-                        </div>
-                      `;
-                      redemptionHistoryList.insertAdjacentHTML("beforeend", historyItem);
-                    });
-                  }
-                })
-                .catch(error => {
-                  console.error("Error fetching redemption history:", error);
-                  redemptionHistoryList.innerHTML = "<p>Error loading redemption history.</p>";
-                });
-            }
+            db.collection('pointHistory')
+              .where('userId', '==', userId)
+              .where('category', '==', 'Rewards Redemption')
+              .orderBy('date', 'desc')
+              .get()
+              .then(querySnapshot => {
+                redemptionHistoryList.innerHTML = ""; // Clear existing history
+                if (querySnapshot.empty) {
+                  redemptionHistoryList.innerHTML = `
+                    <tr>
+                      <td colspan="3" class="text-center">No redemption history available.</td>
+                    </tr>
+                  `;
+                } else {
+                  querySnapshot.forEach(doc => {
+                    const history = doc.data();
+                    const date = new Date(history.date.seconds * 1000).toLocaleDateString('en-GB');
+                    const historyRow = `
+                      <tr>
+                        <td>${date}</td>
+                        <td>${history.description}</td>
+                        <td>${history.points}</td>
+                      </tr>
+                    `;
+                    redemptionHistoryList.insertAdjacentHTML("beforeend", historyRow);
+                  });
+                }
+              })
+              .catch(error => {
+                console.error("Error updating redemption history:", error);
+              });
+          }
 
-              // Fetch and display rewards
-              db.collection("rewards").get().then(querySnapshot => {
-                allRewardsList.innerHTML = ""; // Clear existing rewards
-                querySnapshot.forEach(doc => {
-                  const reward = doc.data();
-                  const rewardCard = document.createElement("div");
-                  rewardCard.className = "col-md-4 mb-3";
+          // Update available rewards
+          function updateAvailableRewards() {
+            const allRewardsList = document.getElementById('allRewardsList');
 
-                  rewardCard.innerHTML = `
-                  <div class="card border-secondary">
-                    <img src="${reward.imageUrl}" class="card-img-top" alt="${reward.rewardName}">
-                    <div class="card-body text-center">
-                      <h5 class="card-title">${reward.rewardName}</h5>
-                      <p class="card-text"><strong>Points: ${reward.pointsRequired}</strong></p>
+            db.collection("rewards").get().then(querySnapshot => {
+              allRewardsList.innerHTML = ""; // Clear existing rewards
+              querySnapshot.forEach(doc => {
+                const reward = doc.data();
+                const rewardCard = `
+                  <div class="col-md-4 mb-3">
+                    <div class="card border-secondary">
+                      <img src="${reward.imageUrl}" class="card-img-top" alt="${reward.rewardName}">
+                      <div class="card-body text-center">
+                        <h5 class="card-title">${reward.rewardName}</h5>
+                        <p class="card-text"><strong>Points: ${reward.pointsRequired}</strong></p>
+                        <button class="btn btn-primary redeem-btn" data-id="${doc.id}">Redeem</button>
+                      </div>
                     </div>
                   </div>
                 `;
-                  allRewardsList.appendChild(rewardCard);
+                allRewardsList.insertAdjacentHTML("beforeend", rewardCard);
+
+                // Attach event listener to redeem button
+                document.querySelector(`button[data-id="${doc.id}"]`).addEventListener('click', () => {
+                  showRedemptionModal(reward);
                 });
-              }).catch(error => {
-                console.error("Error fetching rewards:", error);
               });
+            }).catch(error => {
+              console.error("Error updating rewards:", error);
+            });
+          }
 
-              // Initialize user points and redemption history
-              const auth = firebase.auth();
-              auth.onAuthStateChanged(user => {
-                if (user) {
-                  loadUserPoints(user.uid);
-                  loadRedemptionHistory(user.uid);
-                } else {
-                  console.error("User not logged in.");
-                }
-              });
-            }
+          // Main Functions
 
-            document.addEventListener("DOMContentLoaded", () => {
-              loadAllRewards();
+          // Show redemption confirmation modal
+          function showRedemptionModal(reward) {
+            const modalRewardName = document.getElementById('modalRewardName');
+            const modalPointsRequired = document.getElementById('modalPointsRequired');
+            const modalRemainingPoints = document.getElementById('modalRemainingPoints');
+            const confirmRedeemButton = document.getElementById('confirmRedeem');
+            const modalElement = document.getElementById('redeemModal');
+
+            // Populate modal content
+            modalRewardName.textContent = reward.rewardName;
+            modalPointsRequired.textContent = reward.pointsRequired;
+            modalRemainingPoints.textContent = userPoints - reward.pointsRequired;
+
+            // Replace the button to ensure no duplicate listeners
+            const newConfirmButton = confirmRedeemButton.cloneNode(true);
+            confirmRedeemButton.parentNode.replaceChild(newConfirmButton, confirmRedeemButton);
+
+            // Attach a single click listener
+            newConfirmButton.addEventListener('click', () => {
+              redeemReward(reward); // Trigger reward redemption
+              const redeemModal = bootstrap.Modal.getInstance(modalElement);
+              redeemModal.hide(); // Close the modal
             });
 
-        
+            // Show the modal
+            const redeemModal = new bootstrap.Modal(modalElement, {
+              backdrop: 'static',
+              keyboard: true,
+            });
+            redeemModal.show();
+          }
 
-      </script>
+
+
+
+          // Redeem reward
+          function redeemReward(reward) {
+            const userId = firebase.auth().currentUser.uid;
+            const redeemModal = bootstrap.Modal.getInstance(document.getElementById('redeemModal')); // Get modal instance
+
+            if (userPoints >= reward.pointsRequired) {
+              const userRef = db.collection('users').doc(userId);
+              const pointHistoryRef = db.collection('pointHistory').doc();
+
+              db.runTransaction(transaction => {
+                return transaction.get(userRef).then(userDoc => {
+                  if (!userDoc.exists) throw "User not found!";
+                  const currentPoints = userDoc.data().points;
+
+                  if (currentPoints < reward.pointsRequired) throw "Insufficient points!";
+
+                  // Update user's points
+                  transaction.update(userRef, {
+                    points: currentPoints - reward.pointsRequired
+                  });
+
+                  // Add entry to pointHistory
+                  transaction.set(pointHistoryRef, {
+                    userId: userId,
+                    date: new Date(),
+                    category: 'Rewards Redemption',
+                    description: reward.rewardName,
+                    points: -reward.pointsRequired
+                  });
+
+                  // Return the updated points
+                  return currentPoints - reward.pointsRequired;
+                });
+              })
+                .then(updatedPoints => {
+                  userPoints = updatedPoints; // Update local points
+                  document.getElementById("userPoints").textContent = `${userPoints} points`; // Update points display
+                  updateRedemptionHistory(userId); // Update redemption history dynamically
+                  updateAvailableRewards(); // Refresh the rewards list dynamically
+
+                  redeemModal.hide(); // Close the modal
+                  alert("Reward redeemed successfully!"); // Show success alert
+                })
+                .catch(error => {
+                  console.error("Error redeeming reward:", error);
+                  alert("Failed to redeem reward. Please try again.");
+                });
+            } else {
+              alert("Insufficient points to redeem this reward.");
+            }
+          }
+
+
+
+          // Load all rewards
+          function loadAllRewards() {
+            const userId = auth.currentUser.uid;
+            loadUserPoints(userId);
+            updateAvailableRewards();
+            updateRedemptionHistory(userId);
+          }
+
+          // Initialization
+
+          document.addEventListener("DOMContentLoaded", () => {
+            auth.onAuthStateChanged(user => {
+              if (user) {
+                loadAllRewards();
+              } else {
+                console.error("User not logged in.");
+              }
+            });
+          });
+
+
+        </script>
 
     </body>
 </html>
