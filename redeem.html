@@ -144,25 +144,27 @@
 
 
         <!-- Redemption Confirmation Modal -->
-          <div class="modal fade" id="redeemModal" tabindex="-1" aria-labelledby="redeemModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="redeemModalLabel">Confirm Redemption</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <p><strong>Reward:</strong> <span id="modalRewardName"></span></p>
-                  <p><strong>Points Required:</strong> <span id="modalPointsRequired"></span></p>
-                  <p><strong>Remaining Points:</strong> <span id="modalRemainingPoints"></span></p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                  <button type="button" id="confirmRedeem" class="btn btn-primary">Confirm</button>
-                </div>
+        <div class="modal fade" id="redeemModal" tabindex="-1" aria-labelledby="redeemModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="redeemModalLabel">Confirm Redemption</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body text-center">
+                <img id="modalRewardImage" src="" alt="Reward Image" class="img-fluid mb-3" style="max-height: 200px;">
+                <p><strong>Reward:</strong> <span id="modalRewardName"></span></p>
+                <p><strong>Points Required:</strong> <span id="modalPointsRequired"></span></p>
+                <p><strong>Remaining Points:</strong> <span id="modalRemainingPoints"></span></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="confirmRedeem" class="btn btn-primary">Confirm</button>
               </div>
             </div>
           </div>
+        </div>
+
 
 
 
@@ -243,33 +245,35 @@
           function updateAvailableRewards() {
             const allRewardsList = document.getElementById('allRewardsList');
 
-            db.collection("rewards").get().then(querySnapshot => {
-              allRewardsList.innerHTML = ""; // Clear existing rewards
-              querySnapshot.forEach(doc => {
-                const reward = doc.data();
-                const rewardCard = `
-                  <div class="col-md-4 mb-3">
-                    <div class="card border-secondary">
-                      <img src="${reward.imageUrl}" class="card-img-top" alt="${reward.rewardName}">
-                      <div class="card-body text-center">
-                        <h5 class="card-title">${reward.rewardName}</h5>
-                        <p class="card-text"><strong>Points: ${reward.pointsRequired}</strong></p>
-                        <button class="btn btn-primary redeem-btn" data-id="${doc.id}">Redeem</button>
+              db.collection("rewards").where("available", "==", true).get().then((querySnapshot) => {
+                allRewardsList.innerHTML = ""; // Clear existing rewards
+                querySnapshot.forEach((doc) => {
+                  const reward = { ...doc.data(), id: doc.id }; // Include reward ID for referencing
+                  if (reward.stock <= 0) return; // Skip out-of-stock rewards
+
+                  const rewardCard = `
+                    <div class="col-md-4 mb-3">
+                      <div class="card border-secondary">
+                        <img src="${reward.imageUrl}" class="card-img-top" alt="${reward.rewardName}">
+                        <div class="card-body text-center">
+                          <h5 class="card-title">${reward.rewardName}</h5>
+                          <p class="card-text">Points: ${reward.pointsRequired}</p>
+                          <button class="btn btn-primary redeem-btn" data-id="${doc.id}">Redeem</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                `;
-                allRewardsList.insertAdjacentHTML("beforeend", rewardCard);
+                  `;
+                  allRewardsList.insertAdjacentHTML("beforeend", rewardCard);
 
-                // Attach event listener to redeem button
-                document.querySelector(`button[data-id="${doc.id}"]`).addEventListener('click', () => {
-                  showRedemptionModal(reward);
+                  // Attach event listener to redeem button
+                  document.querySelector(`button[data-id="${doc.id}"]`).addEventListener("click", () => {
+                    showRedemptionModal(reward);
+                  });
                 });
+              }).catch((error) => {
+                console.error("Error loading rewards:", error);
               });
-            }).catch(error => {
-              console.error("Error updating rewards:", error);
-            });
-          }
+            }
 
           // Main Functions
 
@@ -278,6 +282,7 @@
             const modalRewardName = document.getElementById('modalRewardName');
             const modalPointsRequired = document.getElementById('modalPointsRequired');
             const modalRemainingPoints = document.getElementById('modalRemainingPoints');
+            const modalRewardImage = document.getElementById('modalRewardImage'); // Image element
             const confirmRedeemButton = document.getElementById('confirmRedeem');
             const modalElement = document.getElementById('redeemModal');
 
@@ -285,16 +290,21 @@
             modalRewardName.textContent = reward.rewardName;
             modalPointsRequired.textContent = reward.pointsRequired;
             modalRemainingPoints.textContent = userPoints - reward.pointsRequired;
+            modalRewardImage.src = reward.imageUrl || "placeholder.jpg"; // Use a placeholder if no image is provided
 
-            // Replace the button to ensure no duplicate listeners
+            // Clear previous event listeners
             const newConfirmButton = confirmRedeemButton.cloneNode(true);
             confirmRedeemButton.parentNode.replaceChild(newConfirmButton, confirmRedeemButton);
 
             // Attach a single click listener
             newConfirmButton.addEventListener('click', () => {
-              redeemReward(reward); // Trigger reward redemption
+              if (reward.stock <= 0) {
+                alert("Sorry, this reward is out of stock.");
+                return;
+              }
+              redeemReward(reward);
               const redeemModal = bootstrap.Modal.getInstance(modalElement);
-              redeemModal.hide(); // Close the modal
+              redeemModal.hide();
             });
 
             // Show the modal
@@ -311,54 +321,54 @@
           // Redeem reward
           function redeemReward(reward) {
             const userId = firebase.auth().currentUser.uid;
-            const redeemModal = bootstrap.Modal.getInstance(document.getElementById('redeemModal')); // Get modal instance
+            const rewardRef = db.collection('rewards').doc(reward.id); // Reference to the reward document
+            const userRef = db.collection('users').doc(userId);
+            const pointHistoryRef = db.collection('pointHistory').doc();
 
-            if (userPoints >= reward.pointsRequired) {
-              const userRef = db.collection('users').doc(userId);
-              const pointHistoryRef = db.collection('pointHistory').doc();
+            db.runTransaction(async (transaction) => {
+              const rewardDoc = await transaction.get(rewardRef);
+              const userDoc = await transaction.get(userRef);
 
-              db.runTransaction(transaction => {
-                return transaction.get(userRef).then(userDoc => {
-                  if (!userDoc.exists) throw "User not found!";
-                  const currentPoints = userDoc.data().points;
+              if (!rewardDoc.exists) throw "Reward not found!";
+              if (!userDoc.exists) throw "User not found!";
 
-                  if (currentPoints < reward.pointsRequired) throw "Insufficient points!";
+              const rewardData = rewardDoc.data();
+              const userData = userDoc.data();
 
-                  // Update user's points
-                  transaction.update(userRef, {
-                    points: currentPoints - reward.pointsRequired
-                  });
+              // Check stock availability
+              if (rewardData.stock <= 0) throw "Out of stock!";
+              // Check points availability
+              if (userData.points < reward.pointsRequired) throw "Insufficient points!";
 
-                  // Add entry to pointHistory
-                  transaction.set(pointHistoryRef, {
-                    userId: userId,
-                    date: new Date(),
-                    category: 'Rewards Redemption',
-                    description: reward.rewardName,
-                    points: -reward.pointsRequired
-                  });
+              // Deduct points and stock
+              transaction.update(userRef, {
+                points: userData.points - reward.pointsRequired,
+              });
+              transaction.update(rewardRef, {
+                stock: rewardData.stock - 1,
+              });
 
-                  // Return the updated points
-                  return currentPoints - reward.pointsRequired;
-                });
+              // Add redemption to pointHistory
+              transaction.set(pointHistoryRef, {
+                userId: userId,
+                date: new Date(),
+                category: 'Rewards Redemption',
+                description: reward.rewardName,
+                points: -reward.pointsRequired,
+              });
+            })
+              .then(() => {
+                alert("Reward redeemed successfully!");
+                updateRedemptionHistory(userId);
+                updateAvailableRewards(); // Refresh rewards dynamically
+                document.getElementById("userPoints").textContent = `${userPoints - reward.pointsRequired} points`;
               })
-                .then(updatedPoints => {
-                  userPoints = updatedPoints; // Update local points
-                  document.getElementById("userPoints").textContent = `${userPoints} points`; // Update points display
-                  updateRedemptionHistory(userId); // Update redemption history dynamically
-                  updateAvailableRewards(); // Refresh the rewards list dynamically
-
-                  redeemModal.hide(); // Close the modal
-                  alert("Reward redeemed successfully!"); // Show success alert
-                })
-                .catch(error => {
-                  console.error("Error redeeming reward:", error);
-                  alert("Failed to redeem reward. Please try again.");
-                });
-            } else {
-              alert("Insufficient points to redeem this reward.");
-            }
+              .catch((error) => {
+                console.error("Error redeeming reward:", error);
+                alert(error);
+              });
           }
+
 
 
 
